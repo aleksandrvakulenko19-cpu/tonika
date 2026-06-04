@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тоника - Магазин автозвука</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Экран загрузки -->
+    <div id="loader">
+        <div class="loader-logo">
+            <!-- Пульсирующие кольца -->
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            
+            <!-- Эмблема с вашим изображением -->
+          <div class="logo-emblem">
+    <img src="https://sun9-46.userapi.com/s/v1/ig2/TM-wjD02uhtavfR5GTASq3YPpjmnrDXxI9Fy6UUjB9-bptGAr-2bK_O3eW7Qb7EU54dTEjDcSPbDFHpMQI5axCNj.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,500x500&from=bu&u=s0TzOA9DLi9h_254AwDMIV3lCDnc5yhD6GyjP-9cpeo&cs=500x0" alt="ТОНИКА">
+</div>
+        </div> 
+        <div class="loader-text">ЗАГРУЗКА</div>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+
+    <!-- Панель сравнения товаров -->
+    <div class="comparison-panel" id="comparisonPanel">
+        <div class="comparison-panel-content">
+            <div class="comparison-count" id="comparisonCount">0</div>
+            <span>Товаров в сравнении</span>
+            <div class="comparison-actions">
+                <button class="btn" id="openComparisonModal">Сравнить</button>
+                <button class="btn" id="clearComparison">Очистить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно выбора товаров для сравнения -->
+    <div class="comparison-modal" id="comparisonModal">
+        <div class="comparison-modal-container">
+            <div class="comparison-modal-header">
+                <h2>Выберите товары для сравнения</h2>
+                <button class="close-modal" id="closeComparisonModal">&times;</button>
+            </div>
+            <div class="comparison-modal-body">
+                <p>Выберите товары из той же категории для сравнения характеристик:</p>
+                <div class="similar-products" id="similarProducts">
+                    <!-- Похожие товары будут загружены здесь -->
+                </div>
+                <div class="comparison-actions" style="margin-top: 20px; justify-content: center;">
+                    <button class="btn" id="confirmComparison">Сравнить выбранные</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Плавающая кнопка поддержки -->
+    <div class="support-fab" id="supportFab">
+        <i class="fas fa-headset"></i>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div class="modal" id="authModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Авторизация</h2>
+                <button class="close-modal" id="closeAuthModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-form-header">
+                    <div class="auth-form-tab active" data-form="login">Вход</div>
+                    <div class="auth-form-tab" data-form="register">Регистрация</div>
+                </div>
+                
+                <form class="auth-form active" id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Пароль</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Войти</button>
+                    <div class="auth-error" id="loginError" style="display: none; color: #f44336; margin-top: 10px; text-align: center;">Неверный email или пароль</div>
+                </form>
+                
+                <form class="auth-form" id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">Имя</label>
+                        <input type="text" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Пароль</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerConfirmPassword">Подтвердите пароль</label>
+                        <input type="password" id="registerConfirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Зарегистрироваться</button>
+                    <div class="auth-error" id="registerError" style="display: none; color: #f44336; margin-top: 10px; text-align: center;">Пароли не совпадают</div>
+                    <div class="auth-success" id="registerSuccess" style="display: none; color: #4caf50; margin-top: 10px; text-align: center;">Регистрация прошла успешно!</div>
+                </form>
+                
+                <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <p style="margin-bottom: 15px; color: var(--text-color); opacity: 0.7;">Или войдите с помощью</p>
+                    <button class="btn vk-auth-btn" id="vkAuthBtn" style="width: 100%; background: #4a76a8;">
+                        <i class="fab fa-vk" style="margin-right: 10px;"></i>Войти через ВКонтакте
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно корзины -->
+    <div class="modal" id="cartModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Корзина</h2>
+                <button class="close-modal" id="closeCartModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="cart-items" id="cartItems">
+                    <!-- Товары в корзине будут здесь -->
+                </div>
+                <div class="cart-total">
+                    <span>Итого:</span>
+                    <span id="cartTotal">0 ₽</span>
+                </div>
+                <div class="cart-actions">
+                    <button class="btn" id="continueShopping">Продолжить покупки</button>
+                    <button class="btn btn-success" id="checkoutBtn">Оформить заказ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно оформления заказа -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Оформление заказа</h2>
+                <button class="close-modal" id="closeCheckoutModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="checkoutForm">
+                    <div class="form-group">
+                        <label for="checkoutName">ФИО</label>
+                        <input type="text" id="checkoutName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutPhone">Телефон</label>
+                        <input type="tel" id="checkoutPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutEmail">Email</label>
+                        <input type="email" id="checkoutEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutAddress">Адрес доставки</label>
+                        <textarea id="checkoutAddress" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutComment">Комментарий к заказу</label>
+                        <textarea id="checkoutComment" rows="3"></textarea>
+                    </div>
+                    <div class="cart-total">
+                        <span>Итого к оплате:</span>
+                        <span id="checkoutTotal">0 ₽</span>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width: 100%;">Подтвердить заказ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно техподдержки -->
+    <div class="modal" id="supportModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Техническая поддержка</h2>
+                <button class="close-modal" id="closeSupportModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="faq-buttons" id="faqButtons">
+                    <!-- Кнопки с частыми вопросами будут здесь -->
+                </div>
+                <div class="chat-container" id="chatContainer">
+                    <!-- Сообщения чата будут здесь -->
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Введите ваше сообщение...">
+                    <button class="send-btn" id="sendMessageBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно профиля -->
+    <div class="modal" id="profileModal">
+        <div class="modal-container" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Мой профиль</h2>
+                <button class="close-modal" id="closeProfileModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profileAvatar">U</div>
+                        <div class="profile-info">
+                            <h2 id="profileName">Пользователь</h2>
+                            <p id="profileEmail">user@example.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <div class="profile-stat-value" id="profileOrdersCount">0</div>
+                            <div class="profile-stat-label">Заказов</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-value" id="profileTotalSpent">0 ₽</div>
+                            <div class="profile-stat-label">Потрачено</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-value" id="profileReviewsCount">0</div>
+                            <div class="profile-stat-label">Отзывов</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-value" id="profileMemberSince">0 дней</div>
+                            <div class="profile-stat-label">С нами</div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="btn" id="editProfileBtn">Редактировать профиль</button>
+                        <button class="btn" id="changePasswordBtn">Сменить пароль</button>
+                        <button class="btn" id="orderHistoryBtn">История заказов</button>
+                    </div>
+                </div>
+                
+                <div class="profile-orders" id="profileOrders" style="display: none;">
+                    <h3>История заказов</h3>
+                    <div id="ordersList">
+                        <!-- Заказы будут загружены здесь -->
+                    </div>
+                </div>
+                
+                <div class="edit-profile-form" id="editProfileForm" style="display: none;">
+                    <h3>Редактирование профиля</h3>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label for="editProfileName">Имя</label>
+                            <input type="text" id="editProfileName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editProfileEmail">Email</label>
+                            <input type="email" id="editProfileEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editProfilePhone">Телефон</label>
+                            <input type="tel" id="editProfilePhone">
+                        </div>
+                        <div class="form-group">
+                            <label for="editProfileAddress">Адрес</label>
+                            <textarea id="editProfileAddress" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Сохранить изменения</button>
+                        <button type="button" class="btn" id="cancelEditProfile">Отмена</button>
+                    </form>
+                </div>
+                
+                <div class="change-password-form" id="changePasswordForm" style="display: none;">
+                    <h3>Смена пароля</h3>
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Текущий пароль</label>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Новый пароль</label>
+                            <input type="password" id="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmNewPassword">Подтвердите новый пароль</label>
+                            <input type="password" id="confirmNewPassword" required>
+                        </div>
+                        <button type="submit" class="btn">Сменить пароль</button>
+                        <button type="button" class="btn" id="cancelChangePassword">Отмена</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно отклика на вакансию -->
+    <div class="modal" id="vacancyModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Отклик на вакансию</h2>
+                <button class="close-modal" id="closeVacancyModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="vacancyForm">
+                    <div class="form-group">
+                        <label for="vacancyName">ФИО *</label>
+                        <input type="text" id="vacancyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancyPhone">Телефон *</label>
+                        <input type="tel" id="vacancyPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancyBirthdate">Дата рождения *</label>
+                        <input type="date" id="vacancyBirthdate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancyResume">Резюме *</label>
+                        <div class="file-upload">
+                            <input type="file" id="vacancyResume" accept=".pdf,.doc,.docx" required>
+                            <label for="vacancyResume" class="file-upload-label">
+                                <i class="fas fa-upload"></i> Загрузить резюме (PDF, DOC, DOCX)
+                            </label>
+                        </div>
+                        <div class="file-list" id="vacancyResumeName"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancyComment">Комментарий</label>
+                        <textarea id="vacancyComment" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width: 100%;">Отправить отклик</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно заявки на стикер-программу -->
+    <div class="modal" id="stickerModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Заявка на участие в программе</h2>
+                <button class="close-modal" id="closeStickerModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="stickerForm">
+                    <div class="form-group">
+                        <label for="stickerName">ФИО *</label>
+                        <input type="text" id="stickerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stickerPhone">Телефон *</label>
+                        <input type="tel" id="stickerPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stickerCar">Марка и модель автомобиля *</label>
+                        <input type="text" id="stickerCar" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stickerPhotos">Фотографии автомобиля (3 шт.) *</label>
+                        <div class="file-upload">
+                            <input type="file" id="stickerPhotos" accept="image/*" multiple required>
+                            <label for="stickerPhotos" class="file-upload-label">
+                                <i class="fas fa-upload"></i> Загрузить фотографии (макс. 3)
+                            </label>
+                        </div>
+                        <div class="file-list" id="stickerPhotosNames"></div>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width: 100%;">Подать заявку</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+            <div class="logo">
+    <a href="#" class="nav-link" data-page="home" style="text-decoration: none;">
+        <img src="https://sun9-46.userapi.com/s/v1/ig2/TM-wjD02uhtavfR5GTASq3YPpjmnrDXxI9Fy6UUjB9-bptGAr-2bK_O3eW7Qb7EU54dTEjDcSPbDFHpMQI5axCNj.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,500x500&from=bu&u=s0TzOA9DLi9h_254AwDMIV3lCDnc5yhD6GyjP-9cpeo&cs=500x0" alt="ТОНИКА" class="header-logo">
+    </a>
+</div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
+                        <li><a href="#" class="nav-link" data-page="products">Товары</a></li>
+                        <li><a href="#" class="nav-link" data-page="services">Услуги</a></li>
+                        <li><a href="#" class="nav-link" data-page="career">Карьера</a></li>
+                        <li><a href="#" class="nav-link" data-page="events">Мероприятия</a></li>
+                        <li><a href="#" class="nav-link" data-page="contact">Контакты</a></li>
+                        <li class="cart-icon" id="cartIcon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count">0</span>
+                        </li>
+                        <li id="authButtons" class="auth-buttons">
+                            <button class="auth-btn" id="loginBtn">Вход</button>
+                            <button class="auth-btn" id="registerBtn">Регистрация</button>
+                        </li>
+                        <li id="userInfo" class="user-info" style="display: none;">
+                            <div class="user-avatar" id="userAvatar">U</div>
+                            <span id="userName">Пользователь</span>
+                            <button class="auth-btn" id="profileBtn">Профиль</button>
+                            <button class="auth-btn" id="logoutBtn">Выход</button>
+                        </li>
+                        <li class="theme-switch">
+                            <button class="theme-btn" id="themeToggle">
+                                <i class="fas fa-moon" id="themeIcon"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Главная страница -->
+    <section class="page active" id="home-page">
+        <div class="hero" id="home">
+            <div class="container">
+                <div class="hero-content fade-in">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+         <div class="about-section fade-in">
+    <div class="about-img">
+        <img src="https://sun9-54.userapi.com/s/v1/ig2/SWptB6WmZuYlDnZhf02Po4wttX_zjpb7pyNJKX7M8YGiifpr_bMHO2aA9zH4c4H7VQUnem1PkZQTOSUqJElKzYsS.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080&from=bu&cs=1080x0" alt="Магазин автозвука ТОНИКА">
+    </div>
+    <div class="about-content">
+        <h2>О компании "ТОНИКА"</h2>
+        <p>Мы работаем на рынке автозвука более 10 лет, предлагая нашим клиентам только качественное оборудование от ведущих мировых производителей.</p>
+        <p>Наша команда профессионалов поможет подобрать оптимальное решение для вашего автомобиля и установит оборудование с гарантией качества.</p>
+        <a href="#" class="btn nav-link" data-page="services">НАШИ УСЛУГИ</a>
+    </div>
+</div>
+
+            <!-- Популярные товары с горизонтальным скроллингом -->
+            <h2 class="section-title fade-in">ПОПУЛЯРНЫЕ ТОВАРЫ</h2>
+            <div class="horizontal-scroll-container">
+                <div class="horizontal-scroll-wrapper" id="popular-products">
+                    <!-- Популярные товары будут загружены через JavaScript -->
+                </div>
+            </div>
+
+            <!-- Новости с горизонтальным скроллингом -->
+            <h2 class="section-title fade-in">НОВОСТИ И МЕРОПРИЯТИЯ</h2>
+            <div class="horizontal-scroll-container">
+                <div class="horizontal-scroll-wrapper" id="home-news">
+                    <!-- Новости будут загружены через JavaScript -->
+                </div>
+            </div>
+
+            <!-- Тест на знание автозвука -->
+            <div class="interactive-section fade-in">
+                <h2 class="interactive-title">ПРОВЕРЬТЕ СВОИ ЗНАНИЯ ОБ АВТОЗВУКЕ</h2>
+                <p style="margin-bottom: 30px; color: var(--text-color); opacity: 0.8;">Пройдите тест и получите скидку на покупку!</p>
+                
+                <div class="test-container" id="testContainer">
+                    <div id="testContent">
+                        <!-- Тест будет загружен через JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Соревнования на главной -->
+            <div class="competition-section">
+                <div class="competition-header">
+                    <h2>СОРЕВНОВАНИЯ ПО АВТОЗВУКУ</h2>
+                    <p>Примите участие в крупнейших соревнованиях по автозвуку в регионе</p>
+                    <div class="competition-prize">Главный приз: 500 000 ₽</div>
+                </div>
+                
+                <div class="competition-details">
+                    <div class="competition-detail">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Дата проведения</h3>
+                        <p>15 августа 2025 года</p>
+                    </div>
+                    <div class="competition-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Место проведения</h3>
+                        <p>г. Прокопьевск, Автодром "Звук"</p>
+                    </div>
+                    <div class="competition-detail">
+                        <i class="fas fa-trophy"></i>
+                        <h3>Призовой фонд</h3>
+                        <p>500 000 ₽</p>
+                    </div>
+                    <div class="competition-detail">
+                        <i class="fas fa-users"></i>
+                        <h3>Участники</h3>
+                        <p>Более 50 команд</p>
+                    </div>
+                </div>
+                
+                <div class="competition-fee">Вступительный взнос: 10 000 ₽</div>
+                
+                <form id="competitionForm">
+                    <div class="form-group">
+                        <label for="competitionName">ФИО участника</label>
+                        <input type="text" id="competitionName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="competitionPhone">Телефон</label>
+                        <input type="tel" id="competitionPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="competitionEmail">Email</label>
+                        <input type="email" id="competitionEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="competitionCar">Марка и модель автомобиля</label>
+                        <input type="text" id="competitionCar" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="competitionSystem">Описание аудиосистемы</label>
+                        <textarea id="competitionSystem" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="competitionCategory">Категория участия</label>
+                        <select id="competitionCategory" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="sq">SQ (Качество звука)</option>
+                            <option value="spl">SPL (Громкость)</option>
+                            <option value="install">Инсталляция</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width: 100%;">Подать заявку на участие</button>
+                </form>
+            </div>
+
+            <!-- Секция отзывов на главной странице -->
+            <h2 class="section-title fade-in">ОТЗЫВЫ КЛИЕНТОВ</h2>
+            <div class="reviews-list" id="homeReviews">
+                <!-- Отзывы будут загружены здесь -->
+            </div>
+            <div class="add-review-form">
+                <h3>Оставить отзыв</h3>
+                <form id="homeReviewForm">
+                    <div class="form-group">
+                        <label>Ваша оценка</label>
+                        <div class="rating-stars">
+                            <span class="star" data-rating="1">★</span>
+                            <span class="star" data-rating="2">★</span>
+                            <span class="star" data-rating="3">★</span>
+                            <span class="star" data-rating="4">★</span>
+                            <span class="star" data-rating="5">★</span>
+                        </div>
+                        <input type="hidden" id="homeReviewRating" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="homeReviewText">Ваш отзыв</label>
+                        <textarea id="homeReviewText" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Страница товаров -->
+    <section class="page" id="products-page">
+        <div class="container">
+            <h2 class="section-title">КАТАЛОГ ТОВАРОВ</h2>
+            <div class="catalog-filters">
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">Все категории</option>
+                    <option value="acoustics">Акустические системы</option>
+                    <option value="headunits">Автомагнитолы</option>
+                    <option value="amplifiers">Усилители</option>
+                    <option value="subwoofers">Сабвуферы</option>
+                    <option value="accessories">Аксессуары</option>
+                </select>
+                
+                <select class="filter-select" id="priceFilter">
+                    <option value="">Любая цена</option>
+                    <option value="0-5000">До 5 000 ₽</option>
+                    <option value="5000-15000">5 000 - 15 000 ₽</option>
+                    <option value="15000-30000">15 000 - 30 000 ₽</option>
+                    <option value="30000+">От 30 000 ₽</option>
+                </select>
+                
+                <select class="filter-select" id="brandFilter">
+                    <option value="">Все бренды</option>
+                    <option value="pioneer">Pioneer</option>
+                    <option value="alpine">Alpine</option>
+                    <option value="jbl">JBL</option>
+                    <option value="sony">Sony</option>
+                    <option value="kenwood">Kenwood</option>
+                </select>
+            </div>
+            
+            <div class="catalog-products" id="catalogProducts">
+                <!-- Товары будут загружены через JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Страница деталей товара -->
+    <section class="page" id="product-detail-page">
+        <div class="container">
+            <button class="btn" id="backToProducts" style="margin-bottom: 20px;">
+                <i class="fas fa-arrow-left"></i> Назад к товарам
+            </button>
+            
+            <div class="product-detail" id="productDetail">
+                <!-- Детали товара будут загружены через JavaScript -->
+            </div>
+            <!-- Секция сравнения товаров -->
+            <div class="comparison-section" id="comparisonSection" style="display: none;">
+                <h2 class="section-title">СРАВНЕНИЕ ТОВАРОВ</h2>
+                <div class="comparison-table-container" id="comparisonTable">
+                    <!-- Таблица сравнения будет загружена через JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Секция отзывов о товаре -->
+            <div class="reviews-list" id="productReviews">
+                <!-- Отзывы о товаре будут загружены здесь -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Страница услуг -->
+   <!-- Страница услуг -->
+<section class="page" id="services-page">
+    <div class="container">
+        <h2 class="section-title">НАШИ УСЛУГИ</h2>
+        
+        <!-- Панель выбранных услуг -->
+        <div class="selected-services-panel" id="selectedServicesPanel" style="display: none;">
+            <h3>Выбранные услуги</h3>
+            <div class="selected-services-list" id="selectedServicesList">
+                <!-- Выбранные услуги будут здесь -->
+            </div>
+            <div class="selected-services-total">
+                <span>Общая стоимость:</span>
+                <span id="selectedServicesTotal">0 ₽</span>
+            </div>
+            <div class="selected-services-actions">
+                <button class="btn" id="addAllServicesToCart">Добавить все в корзину</button>
+                <button class="btn" id="clearSelectedServices">Очистить список</button>
+            </div>
+        </div>
+        
+        <!-- Установка аудиосистем -->
+        <div class="service-group">
+            <div class="service-section">
+                <div class="service-detail">
+                    <div class="service-detail-img">
+                        <img src="https://a.d-cd.net/16e179s-1920.jpg" alt="Установка аудиосистем">
+                    </div>
+                    <div class="service-detail-content">
+                        <h3>Установка аудиосистем</h3>
+                        <p>Мы предлагаем профессиональную установку автомобильных аудиосистем любой сложности. Наши специалисты имеют многолетний опыт работы и используют только качественное оборудование.</p>
+                        <p>Мы устанавливаем автомагнитолы, усилители, акустические системы, сабвуферы и другое аудиооборудование. Гарантия на все виды работ - 1 год.</p>
+            
+                        <div class="service-selection">
+                            <h4>Выберите услуги:</h4>
+                            <div class="service-options">
+                                <div class="service-option" data-id="install-radio" data-name="Установка автомагнитолы" data-price="2000">
+                                    <div class="service-option-info">
+                                        <div class="service-option-name">Установка автомагнитолы</div>
+                                        <div class="service-option-description">Профессиональная установка автомагнитолы с подключением всех функций</div>
+                                    </div>
+                                    <div class="service-option-price">2 000 ₽</div>
+                                </div>
+                                <div class="service-option" data-id="install-acoustics" data-name="Установка компонентной акустики" data-price="3500">
+                                    <div class="service-option-info">
+                                        <div class="service-option-name">Установка компонентной акустики</div>
+                                        <div class="service-option-description">Установка компонентной акустики с подключением кроссоверов</div>
+                                    </div>
+                                    <div class="service-option-price">3 500 ₽</div>
+                                </div>
+                                <div class="service-option" data-id="install-amplifier" data-name="Установка усилителя" data-price="2500">
+                                    <div class="service-option-info">
+                                        <div class="service-option-name">Установка усилителя</div>
+                                        <div class="service-option-description">Установка усилителя с подключением питания и аудиовходов</div>
+                                    </div>
+                                    <div class="service-option-price">2 500 ₽</div>
+                                </div>
+                                <div class="service-option" data-id="install-subwoofer" data-name="Установка сабвуфера" data-price="4000">
+                                    <div class="service-option-info">
+                                        <div class="service-option-name">Установка сабвуфера</div>
+                                        <div class="service-option-description">Установка сабвуфера в корпусе или изготовление корпуса</div>
+                                    </div>
+                                    <div class="service-option-price">4 000 ₽</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Настройка звука -->
+        <div class="service-group">
+            <div class="service-section">
+                <div class="service-detail">
+                    <div class="service-detail-img">
+                        <img src="https://a.d-cd.net/c417769s-1920.jpg" alt="Настройка звука">
+                    </div>
+                    <div class="service-detail-content">
+                        <h3>Настройка звука</h3>
+                        <p>Правильная настройка аудиосистемы - залог качественного звука. Наши специалисты проведут точную настройку вашей системы с использованием профессионального оборудования.</p>
+                        <p>Мы настраиваем частотные характеристики, временные задержки, уровни сигналов и другие параметры для достижения идеального звучания.</p>
+                        
+                        <div class="service-selection">
+                            <h4>Выберите услуги:</h4>
+                            <div class="service-options">
+                                <div class="service-option" data-id="tuning-basic" data-name="Базовая настройка аудиосистемы" data-price="1500">
+                                    <div class="service-option-info">
+                                        <div class="service-option-name">Базовая настройка аудиосистемы</div>
+                                        <div class="service-option-description">Базовая настройка баланса, громкости и эквалайзера</div>
+                                    </div>
+                                    <div class="service-option-price">1 500 ₽</div>
+                                </div>
+                                <div class="service-option" data-id="tuning-pro" data-name="Профессиональная настройка (с RTA)" data-price="3000">
+                                    <div class="service-option-info">
+                                        <div class="service-option-name">Профессиональная настройка (с RTA)</div>
+                                        <div class="service-option-description">Профессиональная настройка с использованием RTA-анализатора</div>
+                                    </div>
+                                    <div class="service-option-price">3 000 ₽</div>
+                                </div>
+                                <div class="service-option" data-id="tuning-sub" data-name="Настройка сабвуфера" data-price="1000">
+                                    <div class="service-option-info">
+                                        <div class="service-option-name">Настройка сабвуфера</div>
+                                        <div class="service-option-description">Настройка частоты среза, фазы и уровня сабвуфера</div>
+                                    </div>
+                                    <div class="service-option-price">1 000 ₽</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Шумоизоляция автомобиля -->
+        <div class="service-group">
+            <div class="service-detail">
+                <div class="service-detail-img">
+                    <img src="https://avatars.mds.yandex.net/i?id=4c8ce59cc2ee76dae9fc10f9b95bde0c_l-12895285-images-thumbs&n=13" alt="Шумоизоляция автомобиля">
+                </div>
+                <div class="service-detail-content">
+                    <h3>Шумоизоляция автомобиля</h3>
+                    <p>Качественная шумоизоляция не только снижает уровень шума в салоне, но и значительно улучшает акустические характеристики автомобиля.</p>
+                    <p>Мы используем материалы ведущих производителей и применяем проверенные технологии для достижения максимального эффекта.</p>
+                    
+                    <div class="service-selection">
+                        <h4>Выберите услуги:</h4>
+                        <div class="service-options">
+                            <div class="service-option" data-id="isolation-doors" data-name="Шумоизоляция дверей" data-price="6000">
+                                <div class="service-option-info">
+                                    <div class="service-option-name">Шумоизоляция дверей</div>
+                                    <div class="service-option-description">Шумоизоляция всех дверей автомобиля</div>
+                                </div>
+                                <div class="service-option-price">6 000 ₽</div>
+                            </div>
+                            <div class="service-option" data-id="isolation-floor" data-name="Шумоизоляция пола" data-price="8000">
+                                <div class="service-option-info">
+                                    <div class="service-option-name">Шумоизоляция пола</div>
+                                    <div class="service-option-description">Шумоизоляция пола салона и багажника</div>
+                                </div>
+                                <div class="service-option-price">8 000 ₽</div>
+                            </div>
+                            <div class="service-option" data-id="isolation-roof" data-name="Шумоизоляция крыши" data-price="5000">
+                                <div class="service-option-info">
+                                    <div class="service-option-name">Шумоизоляция крыши</div>
+                                    <div class="service-option-description">Шумоизоляция крыши салона</div>
+                                </div>
+                                <div class="service-option-price">5 000 ₽</div>
+                            </div>
+                            <div class="service-option" data-id="isolation-full" data-name="Комплексная шумоизоляция" data-price="25000">
+                                <div class="service-option-info">
+                                    <div class="service-option-name">Комплексная шумоизоляция</div>
+                                    <div class="service-option-description">Полная шумоизоляция всего автомобиля</div>
+                                </div>
+                                <div class="service-option-price">25 000 ₽</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Страница карьеры -->
+    <section class="page" id="career-page">
+        <div class="container">
+            <h2 class="section-title">КАРЬЕРА В ТОНИКЕ</h2>
+            
+            <div class="career-section">
+                <div class="about-content">
+                    <h2>Присоединяйтесь к нашей команде!</h2>
+                    <p>Мы растем и развиваемся, и нам нужны талантливые люди, готовые развиваться вместе с нами. В "Тонике" вы найдете интересные задачи, профессиональный рост и дружный коллектив.</p>
+                    <p>Мы предлагаем конкурентную заработную плату, гибкий график, корпоративное обучение и множество других преимуществ.</p>
+                </div>
+                
+              <div class="career-benefits">
+    <button class="career-benefit" data-benefit="salary">
+        <i class="fas fa-money-bill-wave"></i>
+        <h3>Конкурентная зарплата</h3>
+        <p>Высокий уровень дохода + бонусы</p>
+    </button>
+    <button class="career-benefit" data-benefit="growth">
+        <i class="fas fa-chart-line"></i>
+        <h3>Профессиональный рост</h3>
+        <p>Обучение и карьерное развитие</p>
+    </button>
+    <button class="career-benefit" data-benefit="team">
+        <i class="fas fa-users"></i>
+        <h3>Дружный коллектив</h3>
+        <p>Комфортная рабочая атмосфера</p>
+    </button>
+    <button class="career-benefit" data-benefit="bonuses">
+        <i class="fas fa-gift"></i>
+        <h3>Бонусы и скидки</h3>
+        <p>Льготы на продукцию и услуги</p>
+    </button>
+</div>
+     <div class="team-section">
+    <h2 class="section-title">Наша команда</h2>
+    <div class="team-members">
+        <div class="team-member">
+            <div class="member-photo">
+                <img src="https://sun9-19.userapi.com/s/v1/ig2/RWvR4AXzBxAWZkFqhonDpik5bSfGQAG5qNgHPQKnBj4qi37ZLuKXzdUYpncvOnQmb3lDslvYaIwWSpQKLSvgC6Ti.jpg?quality=95&crop=769,99,1385,1385&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280&ava=1&cs=400x400" alt="Кравчук Иван">
+            </div>
+            <div class="member-info">
+                <h3>Иван Иванов</h3>
+                <p class="member-position">Главный установщик</p>
+                <p class="member-description">Опыт работы 8 лет. Специализируется на установке премиальных аудиосистем. Участвовал в чемпионатах России по автозвуку.</p>
+            </div>
+        </div>
+        <div class="team-member">
+            <div class="member-photo">
+                <img src="https://avtozvuk-spb.ru/img/b2b/guy.jpg" alt="Романенко Петр">
+            </div>
+            <div class="member-info">
+                <h3>Петр Петров</h3>
+                <p class="member-position">Менеджер по продажам</p>
+                <p class="member-description">Работает в компании 5 лет. Помог сотням клиентов выбрать идеальную аудиосистему. Эксперт в области автомобильной акустики.</p>
+            </div>
+        </div>
+        <div class="team-member">
+            <div class="member-photo">
+                <img src="https://avatars.mds.yandex.net/i?id=5bc0701c5d65ff4dd63aad6f5fb57edb_l-6649451-images-thumbs&n=13" alt="Сергей Сергеев">
+            </div>
+            <div class="member-info">
+                <h3>Сергей Сергеев</h3>
+                <p class="member-position">Специалист по настройке</p>
+                <p class="member-description">Настраивает аудиосистемы для соревнований. Опыт 6 лет. Обладает абсолютным музыкальным слухом.</p>
+            </div>
+        </div>
+    </div>
+</div>
+            <div class="vacancies-list">
+                <h2 class="section-title">АКТУАЛЬНЫЕ ВАКАНСИИ</h2>
+                
+                <div class="vacancy-item">
+                    <div class="vacancy-header">
+                        <h3 class="vacancy-title">Менеджер по продажам автозвука</h3>
+                        <div class="vacancy-salary">от 65 000 ₽</div>
+                    </div>
+                    <p>Мы ищем активного и целеустремленного менеджера по продажам с опытом работы в сфере автозвука или смежных областях.</p>
+                    
+                    <div class="vacancy-requirements">
+                        <h4>Обязанности:</h4>
+                        <ul>
+                            <li>Консультирование клиентов по продукции</li>
+                            <li>Подбор аудиосистем под потребности клиента</li>
+                            <li>Оформление заказов и ведение клиентской базы</li>
+                            <li>Работа с входящими и исходящими звонками</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="vacancy-requirements">
+                        <h4>Требования:</h4>
+                        <ul>
+                            <li>Опыт работы в продажах от 1 года</li>
+                            <li>Знание автозвукового оборудования</li>
+                            <li>Навыки работы с клиентами</li>
+                            <li>Ответственность и коммуникабельность</li>
+                        </ul>
+                    </div>
+                    
+                    <button class="btn apply-vacancy-btn" data-vacancy="Менеджер по продажам автозвука">Откликнуться на вакансию</button>
+                </div>
+                
+                <div class="vacancy-item">
+                    <div class="vacancy-header">
+                        <h3 class="vacancy-title">Специалист по установке автозвука</h3>
+                        <div class="vacancy-salary">от 80 000 ₽</div>
+                    </div>
+                    <p>Требуется опытный специалист по установке автомобильных аудиосистем любого уровня сложности.</p>
+                    
+                    <div class="vacancy-requirements">
+                        <h4>Обязанности:</h4>
+                        <ul>
+                            <li>Установка автомагнитол, усилителей, акустики</li>
+                            <li>Монтаж сабвуферов и прокладка аудиокабелей</li>
+                            <li>Настройка аудиосистем</li>
+                            <li>Шумоизоляция автомобилей</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="vacancy-requirements">
+                        <h4>Требования:</h4>
+                        <ul>
+                            <li>Опыт работы от 2 лет</li>
+                            <li>Знание автомобильной электрики</li>
+                            <li>Умение читать схемы и чертежи</li>
+                            <li>Наличие собственного инструмента</li>
+                        </ul>
+                    </div>
+                    
+                    <button class="btn apply-vacancy-btn" data-vacancy="Специалист по установке автозвука">Откликнуться на вакансию</button>
+                </div>
+                
+                <div class="vacancy-item">
+                    <div class="vacancy-header">
+                        <h3 class="vacancy-title">Маркетолог</h3>
+                        <div class="vacancy-salary">от 70 000 ₽</div>
+                    </div>
+                    <p>Ищем креативного маркетолога для продвижения нашего бренда и увеличения продаж.</p>
+                    
+                    <div class="vacancy-requirements">
+                        <h4>Обязанности:</h4>
+                        <ul>
+                            <li>Разработка и реализация маркетинговой стратегии</li>
+                            <li>Ведение социальных сетей и контент-планирование</li>
+                            <li>Организация и проведение мероприятий</li>
+                            <li>Анализ рынка и конкурентов</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="vacancy-requirements">
+                        <h4>Требования:</h4>
+                        <ul>
+                            <li>Опыт работы в маркетинге от 1 года</li>
+                            <li>Знание SMM, контекстной рекламы</li>
+                            <li>Навыки работы с графическими редакторами</li>
+                            <li>Креативное мышление и аналитические способности</li>
+                        </ul>
+                    </div>
+                    
+                    <button class="btn apply-vacancy-btn" data-vacancy="Маркетолог">Откликнуться на вакансию</button>
+                </div>
+            </div>
+            
+            <div class="sticker-program">
+                <div class="sticker-program-header">
+                    <h2>АЛЬТЕРНАТИВНЫЙ СПОСОБ ЗАРАБОТКА</h2>
+                    <p>Станьте мобильным рекламным щитом и зарабатывайте 3 000 рублей в месяц!</p>
+                </div>
+                
+                <div class="sticker-program-details">
+                    <div class="sticker-detail">
+                        <i class="fas fa-car"></i>
+                        <h3>Наклейте баннер</h3>
+                        <p>Разместите наклейку нашего бренда на своем автомобиле</p>
+                    </div>
+                    <div class="sticker-detail">
+                        <i class="fas fa-money-bill"></i>
+                        <h3>Получайте доход</h3>
+                        <p>3 000 рублей ежемесячно за передвижение по городу</p>
+                    </div>
+                    <div class="sticker-detail">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Длительность</h3>
+                        <p>Программа действует от 3 месяцев</p>
+                    </div>
+                </div>
+                
+                <div class="sticker-example">
+                    <h3>Пример наклейки на автомобиль</h3>
+                    <img src="https://sun9-62.userapi.com/s/v1/ig2/szDiE5ZyguofEqFp2eNA18HqrauTXnES5eGuKQzJ_b3C40yid-oe3IefA8tEHwugafJ_qvfTrc1dYtbjCZvtSa2K.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,500x500&from=bu&cs=500x0" alt="Пример наклейки ТОНИКА на автомобиле">
+                </div>
+                
+                <div class="sticker-program-header">
+                    <h3>Условия участия в программе:</h3>
+                    <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                        <li>Автомобиль должен быть в хорошем техническом и внешнем состоянии</li>
+                        <li>Минимальный срок участия - 3 месяца</li>
+                        <li>Ежедневный пробег по городу не менее 30 км</li>
+                        <li>Наклейка должна быть размещена на видном месте и содержаться в чистоте</li>
+                    </ul>
+                    
+                    <button class="btn" id="applyStickerBtn">Подать заявку на участие</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Страница мероприятий -->
+    <section class="page" id="events-page">
+        <div class="container">
+            <h2 class="section-title">МЕРОПРИЯТИЯ И СОБЫТИЯ</h2>
+            
+            <div class="news-grid" id="eventsGrid">
+                <!-- Мероприятия будут загружены через JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Страница деталей мероприятия -->
+    <section class="page" id="event-detail-page">
+        <div class="container">
+            <button class="btn" id="backToEvents" style="margin-bottom: 20px;">
+                <i class="fas fa-arrow-left"></i> Назад к мероприятиям
+            </button>
+            
+            <div class="event-detail" id="eventDetail">
+                <!-- Детали мероприятия будут загружены через JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Страница контактов -->
+    <section class="page" id="contact-page">
+        <div class="container">
+            <h2 class="section-title">КОНТАКТЫ</h2>
+            
+            <div class="contact-content">
+                <div class="contact-info fade-in">
+                    <h3>Свяжитесь с нами</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> г. Прокопьевск, ул. Автозвуковая, д. 15</p>
+                    <p><i class="fas fa-phone"></i> +7 (3846) 12-34-56</p> 
+                    <p><i class="fas fa-envelope"></i> info@tonika-auto.ru</p>
+                    <p><i class="fas fa-clock"></i> Пн-Пт: 10:00 - 20:00, Сб-Вс: 11:00 - 18:00</p>
+                    
+                    <h3 style="margin-top: 30px;">Как нас найти</h3>
+                    <p>Мы находимся в центре Прокопьевска, в 5 минутах ходьбы от центральной площади. У нас есть бесплатная парковка для клиентов.</p>
+                    
+                    <div style="margin-top: 30px;">
+                        <img src="https://sun9-54.userapi.com/s/v1/ig2/SWptB6WmZuYlDnZhf02Po4wttX_zjpb7pyNJKX7M8YGiifpr_bMHO2aA9zH4c4H7VQUnem1PkZQTOSUqJElKzYsS.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080&from=bu&cs=1080x0" alt="Магазин ТОНИКА" style="width: 100%; border-radius: 10px;">
+                    </div>
+                </div>
+                <div class="contact-form fade-in">
+                    <form id="contactForm">
+                        <input type="text" placeholder="Ваше имя" required>
+                        <input type="tel" placeholder="Ваш телефон" required>
+                        <input type="email" placeholder="Ваш email" required>
+                        <textarea placeholder="Ваше сообщение" rows="5" required></textarea>
+                        <button type="submit" class="btn">Отправить</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <!-- Карта Прокопьевска -->
+                <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A2e9f0e8e9b2d1c1f8e8b9e9b2d1c1f8e8b9e9b2d1c1f8e8b9e9b2d1c1f8e8b9e9&amp;source=constructor" width="100%" height="400" frameborder="0"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+         <div class="footer-logo">
+    <a href="#" class="nav-link" data-page="home" style="text-decoration: none;">
+        <img src="https://sun9-46.userapi.com/s/v1/ig2/TM-wjD02uhtavfR5GTASq3YPpjmnrDXxI9Fy6UUjB9-bptGAr-2bK_O3eW7Qb7EU54dTEjDcSPbDFHpMQI5axCNj.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,500x500&from=bu&u=s0TzOA9DLi9h_254AwDMIV3lCDnc5yhD6GyjP-9cpeo&cs=500x0" alt="ТОНИКА" class="footer-logo-img">
+    </a>
+</div>
+                <div class="social-links">
+                    <a href="https://vk.com/club233769318?from=groups" target="_blank"><i class="fab fa-vk"></i></a>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 ТОНИКА - Магазин автозвука. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <!-- Модальные окна для преимуществ карьеры -->
+<!-- Модальное окно конкурентной зарплаты -->
+<!-- Модальное окно конкурентной зарплаты -->
+<div class="modal" id="salaryModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2><i class="fas fa-money-bill-wave"></i> Конкурентная зарплата</h2>
+            <button class="close-modal" data-modal="salaryModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-text-content">
+                <p>Самые высокие зарплаты в городе + бонусы за результаты</p>
+            </div>
+            
+            <div class="salary-visual">
+                <div class="visual-title">Сравнение зарплат (руб./мес)</div>
+                <div class="chart-bars">
+                    <div class="chart-bar">
+                        <div class="bar tonika" style="height: 80px;">
+                            <div class="bar-value tonika">65 000 ₽</div>
+                        </div>
+                        <div class="bar-label">Менеджер<br>ТОНИКА</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar others" style="height: 50px;">
+                            <div class="bar-value others">45 000 ₽</div>
+                        </div>
+                        <div class="bar-label">Менеджер<br>Другие</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar tonika" style="height: 95px;">
+                            <div class="bar-value tonika">80 000 ₽</div>
+                        </div>
+                        <div class="bar-label">Установщик<br>ТОНИКА</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar others" style="height: 60px;">
+                            <div class="bar-value others">60 000 ₽</div>
+                        </div>
+                        <div class="bar-label">Установщик<br>Другие</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно профессионального роста -->
+<div class="modal" id="growthModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2><i class="fas fa-chart-line"></i> Профессиональный рост</h2>
+            <button class="close-modal" data-modal="growthModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-text-content">
+                <p>Карьерная лестница от стажера до руководителя отдела</p>
+            </div>
+            
+            <div class="growth-visual">
+                <div class="visual-title">Путь развития в компании</div>
+                <div class="ladder-steps">
+                    <div class="ladder-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Стажер</div>
+                            <div class="step-duration">0-6 месяцев обучения</div>
+                        </div>
+                    </div>
+                    <div class="ladder-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Специалист</div>
+                            <div class="step-duration">6-18 месяцев практики</div>
+                        </div>
+                    </div>
+                    <div class="ladder-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Старший специалист</div>
+                            <div class="step-duration">Ответственные проекты</div>
+                        </div>
+                    </div>
+                    <div class="ladder-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Руководитель отдела</div>
+                            <div class="step-duration">Управление командой</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно дружного коллектива -->
+<div class="modal" id="teamModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2><i class="fas fa-users"></i> Дружный коллектив</h2>
+            <button class="close-modal" data-modal="teamModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-text-content">
+                <p>Команда профессионалов, где каждый ценен</p>
+            </div>
+            
+           <div class="team-visual">
+    <div class="visual-title">Наша команда</div>
+    <div class="team-grid">
+        <div class="team-member-card">
+            <div class="member-avatar">У</div>
+            <div class="member-name">Установщики</div>
+            <div class="member-role">6 специалистов</div>
+        </div>
+        <div class="team-member-card">
+            <div class="member-avatar">М</div>
+            <div class="member-name">Менеджеры</div>
+            <div class="member-role">4 консультанта</div>
+        </div>
+        <div class="team-member-card">
+            <div class="member-avatar">А</div>
+            <div class="member-name">Администрация</div>
+            <div class="member-role">3 руководителя</div>
+        </div>
+        <div class="team-member-card">
+            <div class="member-avatar">Т</div>
+            <div class="member-name">Технические</div>
+            <div class="member-role">2 эксперта</div>
+        </div>
+        <!-- Новые карточки -->
+        <div class="team-member-card">
+            <div class="member-avatar">МК</div>
+            <div class="member-name">Маркетинг</div>
+            <div class="member-role">2 специалиста</div>
+        </div>
+        <div class="team-member-card">
+            <div class="member-avatar">П</div>
+            <div class="member-name">Поддержка</div>
+            <div class="member-role">3 оператора</div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно бонусов и скидок -->
+<div class="modal" id="bonusesModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2><i class="fas fa-gift"></i> Бонусы и скидки</h2>
+            <button class="close-modal" data-modal="bonusesModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-text-content">
+                <p>Дополнительные льготы и преимущества для сотрудников</p>
+            </div>
+            
+            <div class="bonuses-visual">
+                <div class="visual-title">Система льгот</div>
+                <div class="bonus-cards">
+                    <div class="bonus-card">
+                        <div class="bonus-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="bonus-title">Скидка на товары</div>
+                        <div class="bonus-value">30%</div>
+                    </div>
+                    <div class="bonus-card">
+                        <div class="bonus-icon"><i class="fas fa-umbrella-beach"></i></div>
+                        <div class="bonus-title">Отпуск</div>
+                        <div class="bonus-value">28+ дней</div>
+                    </div>
+                    <div class="bonus-card">
+                        <div class="bonus-icon"><i class="fas fa-dumbbell"></i></div>
+                        <div class="bonus-title">Спорт</div>
+                        <div class="bonus-value">5 000 ₽</div>
+                    </div>
+                    <div class="bonus-card">
+                        <div class="bonus-icon"><i class="fas fa-heartbeat"></i></div>
+                        <div class="bonus-title">Медстрахование</div>
+                        <div class="bonus-value">ДМС</div>
+                    </div>
+                    <div class="bonus-card">
+                        <div class="bonus-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="bonus-title">Обучение</div>
+                        <div class="bonus-value">Бесплатно</div>
+                    </div>
+                    <div class="bonus-card">
+                        <div class="bonus-icon"><i class="fas fa-home"></i></div>
+                        <div class="bonus-title">Ипотека</div>
+                        <div class="bonus-value">Льготная</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Скрытая админ-панель -->
+<div class="modal" id="adminPanelModal">
+    <div class="modal-container" style="max-width: 900px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #f44336, #d32f2f); color: white;">
+            <h2><i class="fas fa-user-shield"></i> Админ-панель</h2>
+            <button class="close-modal" id="closeAdminPanel">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="products">Товары</button>
+                <button class="admin-tab" data-tab="services">Услуги</button>
+                <button class="admin-tab" data-tab="reviews">Отзывы</button>
+                <button class="admin-tab" data-tab="news">Новости и мероприятия</button>
+                <button class="admin-tab" data-tab="orders">Заказы</button>
+                <button class="admin-tab" data-tab="users">Пользователи</button>
+            </div>
+            <div class="admin-content">
+                <div id="admin-products" class="admin-section active">
+                    <h3>Управление товарами</h3>
+                    <button class="btn" id="addProductBtn">+ Добавить товар</button>
+                    <div class="admin-table-wrapper" style="overflow-x: auto; margin-top: 20px;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr><th>ID</th><th>Название</th><th>Категория</th><th>Цена</th><th>Действия</th></tr>
+                            </thead>
+                            <tbody id="adminProductsList"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="admin-services" class="admin-section">
+                    <h3>Управление услугами</h3>
+                    <button class="btn" id="addServiceBtn">+ Добавить услугу</button>
+                    <div class="admin-table-wrapper" style="overflow-x: auto; margin-top: 20px;">
+                        <table class="admin-table">
+                            <thead><tr><th>ID</th><th>Название</th><th>Цена</th><th>Действия</th></tr></thead>
+                            <tbody id="adminServicesList"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="admin-reviews" class="admin-section">
+                    <h3>Управление отзывами</h3>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table"><thead><tr><th>ID</th><th>Автор</th><th>Рейтинг</th><th>Текст</th><th>Действия</th></tr></thead>
+                        <tbody id="adminReviewsList"></tbody></table>
+                    </div>
+                </div>
+                <div id="admin-news" class="admin-section">
+                    <h3>Новости и мероприятия</h3>
+                    <button class="btn" id="addNewsBtn">+ Добавить</button>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table"><thead><tr><th>ID</th><th>Название</th><th>Дата</th><th>Тип</th><th>Действия</th></tr></thead>
+                        <tbody id="adminNewsList"></tbody></table>
+                    </div>
+                </div>
+                <div id="admin-orders" class="admin-section">
+                    <h3>Заказы</h3>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table"><thead><tr><th>ID</th><th>Дата</th><th>Сумма</th><th>Статус</th><th>Действия</th></tr></thead>
+                        <tbody id="adminOrdersList"></tbody></table>
+                    </div>
+                </div>
+                <div id="admin-users" class="admin-section">
+                    <h3>Пользователи</h3>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table"><thead><tr><th>Email</th><th>Имя</th><th>Действия</th></tr></thead>
+                        <tbody id="adminUsersList"></tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Форма добавления/редактирования товара (скрыта) -->
+<div class="modal" id="productFormModal">
+    <div class="modal-container" style="max-width: 600px;">
+        <div class="modal-header"><h2 id="productFormTitle">Добавить товар</h2><button class="close-modal" id="closeProductForm">&times;</button></div>
+        <div class="modal-body">
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="form-group"><label>Название</label><input type="text" id="productName" required></div>
+                <div class="form-group"><label>Категория</label><select id="productCategory"><option value="acoustics">Акустика</option><option value="headunits">Магнитолы</option><option value="amplifiers">Усилители</option><option value="subwoofers">Сабвуферы</option><option value="accessories">Аксессуары</option></select></div>
+                <div class="form-group"><label>Бренд</label><input type="text" id="productBrand"></div>
+                <div class="form-group"><label>Цена (₽)</label><input type="number" id="productPrice" required></div>
+                <div class="form-group"><label>Изображение (URL)</label><input type="url" id="productImage" required></div>
+                <div class="form-group"><label>Доп. изображения (через запятую URL)</label><input type="text" id="productImages" placeholder="url1,url2,url3"></div>
+                <div class="form-group"><label>Описание</label><textarea id="productDescription" rows="3"></textarea></div>
+                <div class="form-group"><label>Характеристики (JSON)</label><textarea id="productSpecs" rows="5" placeholder='{"Тип":"Компонентная","Мощность":"100 Вт"}'></textarea></div>
+                <div class="form-group"><label>Видео (URL)</label><input type="url" id="productVideo"></div>
+                <div class="form-group"><label>Рейтинг (0-5)</label><input type="number" step="0.1" id="productRating" value="4.5"></div>
+                <button type="submit" class="btn">Сохранить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Форма для услуги -->
+<div class="modal" id="serviceFormModal">
+    <div class="modal-container" style="max-width: 500px;"><div class="modal-header"><h2>Добавить/Редактировать услугу</h2><button class="close-modal" id="closeServiceForm">&times;</button></div>
+    <div class="modal-body"><form id="serviceForm"><input type="hidden" id="serviceId"><div class="form-group"><label>Название</label><input type="text" id="serviceName" required></div><div class="form-group"><label>Цена (₽)</label><input type="number" id="servicePrice" required></div><div class="form-group"><label>Описание</label><textarea id="serviceDescription" rows="2"></textarea></div><button type="submit" class="btn">Сохранить</button></form></div></div>
+</div>
+
+<!-- Форма для новости/мероприятия -->
+<div class="modal" id="newsFormModal">
+    <div class="modal-container" style="max-width: 600px;"><div class="modal-header"><h2>Добавить/Редактировать</h2><button class="close-modal" id="closeNewsForm">&times;</button></div>
+    <div class="modal-body"><form id="newsForm"><input type="hidden" id="newsId"><div class="form-group"><label>Заголовок</label><input type="text" id="newsTitle" required></div><div class="form-group"><label>Дата</label><input type="text" id="newsDate" placeholder="15 июля 2025" required></div><div class="form-group"><label>Изображение URL</label><input type="url" id="newsImage" required></div><div class="form-group"><label>Краткое описание</label><textarea id="newsExcerpt" rows="2" required></textarea></div><div class="form-group"><label>Тип</label><select id="newsType"><option value="event">Мероприятие</option><option value="news">Новость</option></select></div><div class="form-group"><label>Спонсируется ТОНИКА</label><input type="checkbox" id="newsSponsor"></div><button type="submit" class="btn">Сохранить</button></form></div></div>
+</div>
+
+<!-- Стили для админ-панели -->
+<style>
+.admin-tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--border-color); margin-bottom: 20px; flex-wrap: wrap; }
+.admin-tab { padding: 10px 20px; background: none; border: none; cursor: pointer; font-weight: bold; color: var(--text-color); opacity: 0.7; transition: 0.3s; }
+.admin-tab.active { opacity: 1; border-bottom: 3px solid var(--accent-color); color: var(--accent-color); }
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+.admin-table { width: 100%; border-collapse: collapse; background: var(--card-bg); }
+.admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-color); }
+.admin-table th { background: var(--secondary-color); }
+.admin-actions button { margin: 0 5px; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; }
+.edit-btn { background: #4caf50; color: white; }
+.delete-btn { background: #f44336; color: white; }
+</style>
+</body>
+</html>
+
+
