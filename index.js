@@ -4609,11 +4609,21 @@ function deleteProduct(id) {
         const index = productsData.findIndex(p => p.id === id);
         if (index !== -1) {
             productsData.splice(index, 1);
-            // Обновляем localStorage с новым списком товаров
             localStorage.setItem('productsData', JSON.stringify(productsData));
-            loadAdminProducts();
-            loadCatalogProducts();
-            loadPopularProducts();
+            
+            loadAdminProducts();          // обновить админ-таблицу
+            loadCatalogProducts();        // обновить каталог
+            loadPopularProducts();        // обновить популярные товары
+            
+            // Если товар был в сравнении – удаляем его оттуда
+            if (comparisonList.includes(id)) {
+                const idx = comparisonList.indexOf(id);
+                comparisonList.splice(idx, 1);
+                localStorage.setItem('comparisonList', JSON.stringify(comparisonList));
+                updateComparisonPanel();
+                loadComparisonSection();
+            }
+            
             showNotification('Товар удален');
         }
     }
@@ -4695,6 +4705,19 @@ function deleteService(id) {
             servicesData.splice(index, 1);
             localStorage.setItem('servicesData', JSON.stringify(servicesData));
             loadAdminServices();
+            
+            // Если услуга была выбрана – убираем её из выбранных
+            const serviceIndex = selectedServices.findIndex(s => s.id === id);
+            if (serviceIndex !== -1) {
+                selectedServices.splice(serviceIndex, 1);
+                document.querySelectorAll('.service-option').forEach(opt => {
+                    if (opt.getAttribute('data-id') === id) {
+                        opt.classList.remove('selected');
+                    }
+                });
+                updateSelectedServicesPanel();
+            }
+            
             showNotification('Услуга удалена');
         }
     }
@@ -4755,11 +4778,13 @@ function loadAdminReviews() {
 function deleteReview(id, type) {
     if (confirm('Удалить отзыв?')) {
         const index = reviewsData.findIndex(r => r.id === id);
-        if (index !== -1) reviewsData.splice(index, 1);
-        localStorage.setItem('reviewsData', JSON.stringify(reviewsData));
-        loadAdminReviews();
-        loadHomeReviews();
-        showNotification('Отзыв удален');
+        if (index !== -1) {
+            reviewsData.splice(index, 1);
+            localStorage.setItem('reviewsData', JSON.stringify(reviewsData));
+            loadAdminReviews();
+            loadHomeReviews();   // обновить отзывы на главной
+            showNotification('Отзыв удален');
+        }
     }
 }
 
@@ -4768,10 +4793,19 @@ function deleteProductReview(productId, reviewId) {
         const product = productsData.find(p => p.id === productId);
         if (product && product.reviewsData) {
             const idx = product.reviewsData.findIndex(r => r.id === reviewId);
-            if (idx !== -1) product.reviewsData.splice(idx, 1);
-            localStorage.setItem('productsData', JSON.stringify(productsData));
-            loadAdminReviews();
-            showNotification('Отзыв удален');
+            if (idx !== -1) {
+                product.reviewsData.splice(idx, 1);
+                localStorage.setItem('productsData', JSON.stringify(productsData));
+                loadAdminReviews();
+                // Если сейчас открыта страница этого товара – обновляем отзывы
+                const currentPage = document.querySelector('.page.active');
+                if (currentPage && currentPage.id === 'product-detail-page') {
+                    // Получаем ID товара из URL (если он там есть) или из глобальной переменной
+                    // Можно просто перезагрузить отзывы по productId
+                    loadProductReviews(productId);
+                }
+                showNotification('Отзыв удален');
+            }
         }
     }
 }
@@ -4810,12 +4844,14 @@ function editNews(id) {
 function deleteNews(id) {
     if (confirm('Удалить запись?')) {
         const index = newsData.findIndex(n => n.id === id);
-        if (index !== -1) newsData.splice(index, 1);
-        localStorage.setItem('newsData', JSON.stringify(newsData));
-        loadAdminNews();
-        loadHomeNews();
-        loadEvents();
-        showNotification('Удалено');
+        if (index !== -1) {
+            newsData.splice(index, 1);
+            localStorage.setItem('newsData', JSON.stringify(newsData));
+            loadAdminNews();
+            loadHomeNews();   // обновить новости на главной
+            loadEvents();     // обновить страницу мероприятий
+            showNotification('Удалено');
+        }
     }
 }
 
