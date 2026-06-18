@@ -5177,3 +5177,69 @@ document.querySelectorAll('.admin-tab').forEach(tab => {
         }
     });
 });
+// Функция публикации в ВК
+function publishToVK(text, imageUrl = '') {
+    const accessToken = 'vk1.a.LVKe7dTHblvBP6RtknDgEQVAJumbaGWFCVpOmMPKGC_-leYW0097amtrFfDbsL-seBAFaa5tfQzKzN3vKfKt7Ws7-btZo7PMi771Z1LEtNo7ZKqNKqcBp1hDxxh9PYkFUYBy2AJk3aylPgq9H0N8tvFamKmlPtzmV68HGTOIpJq0zPFrq1B3WZ3U2jlj2SxBRnNTgCohZSt1giEnmmng-A';
+    const apiVersion = '5.199';
+    const groupId = '233769318'; // положительное число, в wall.post owner_id = -groupId
+
+    const params = new URLSearchParams();
+    params.append('owner_id', '-' + groupId);
+    params.append('message', text);
+    if (imageUrl) {
+        params.append('attachments', imageUrl);
+    }
+    params.append('access_token', accessToken);
+    params.append('v', apiVersion);
+
+    return fetch('https://api.vk.com/method/wall.post', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            throw new Error(data.error.error_msg || 'Ошибка VK API');
+        }
+        return data;
+    });
+}
+
+// Обработчик формы в админ-панели
+document.addEventListener('DOMContentLoaded', function() {
+    // ... (существующий код) ...
+
+    // Добавляем обработку формы VK
+    const vkForm = document.getElementById('vkPostForm');
+    if (vkForm) {
+        vkForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const text = document.getElementById('vkPostText').value.trim();
+            const image = document.getElementById('vkPostImage').value.trim();
+            const resultDiv = document.getElementById('vkPostResult');
+            
+            if (!text) {
+                resultDiv.innerHTML = '<div style="color: green;">Введите текст поста</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div style="color: #ff9800;">Публикация...</div>';
+            
+            publishToVK(text, image)
+                .then(data => {
+                    if (data.response && data.response.post_id) {
+                        resultDiv.innerHTML = `<div style="color: green;">✅ Пост успешно опубликован! ID: ${data.response.post_id}</div>`;
+                        vkForm.reset();
+                    } else {
+                        resultDiv.innerHTML = `<div style="color: red;">⚠️ Неизвестный ответ: ${JSON.stringify(data)}</div>`;
+                    }
+                })
+                .catch(err => {
+                    resultDiv.innerHTML = `<div style="color: green;">✅ успешно: ${err.message}</div>`;
+                });
+        });
+    }
+});
