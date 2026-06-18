@@ -5012,4 +5012,132 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     checkAuthStatus();
 });
+// Получить всех пользователей, у которых есть сообщения в поддержке
+function getAllUsersWithMessages() {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    const result = [];
+    for (const email in userData) {
+        const data = userData[email];
+        if (data.supportMessages && data.supportMessages.length > 0) {
+            result.push({
+                email: email,
+                name: data.profile?.name || email,
+                messages: data.supportMessages
+            });
+        }
+    }
+    return result;
+}
 
+// Получить сообщения конкретного пользователя по email
+function getUserSupportMessages(email) {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    return userData[email]?.supportMessages || [];
+}
+
+// Добавить сообщение от поддержки к пользователю
+function addSupportMessageToUser(email, messageText) {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    if (!userData[email]) {
+        // Если пользователя нет в userData, создаём базовую структуру
+        userData[email] = {
+            supportMessages: [],
+            profile: { name: email, email: email }
+        };
+    }
+    if (!userData[email].supportMessages) {
+        userData[email].supportMessages = [];
+    }
+    // Добавляем сообщение от поддержки
+    userData[email].supportMessages.push({
+        text: messageText,
+        sender: 'support',
+        timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('userData', JSON.stringify(userData));
+}
+// Загрузка списка пользователей с сообщениями
+function loadSupportUsers() {
+    const container = document.getElementById('supportUsersList');
+    container.innerHTML = '';
+    const users = getAllUsersWithMessages();
+    if (users.length === 0) {
+        container.innerHTML = '<p>Нет обращений от клиентов.</p>';
+        return;
+    }
+    users.forEach(user => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color);';
+        div.innerHTML = `
+            <span><strong>${user.name}</strong> (${user.email}) — ${user.messages.length} сообщ.</span>
+            <button class="btn view-user-chat" data-email="${user.email}" style="padding: 5px 15px; font-size: 14px;">Открыть чат</button>
+        `;
+        container.appendChild(div);
+    });
+
+    // Обработчики для кнопок "Открыть чат"
+    document.querySelectorAll('.view-user-chat').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const email = this.getAttribute('data-email');
+            openSupportChat(email);
+        });
+    });
+}
+
+// Открыть чат с конкретным пользователем
+function openSupportChat(email) {
+    const chatContainer = document.getElementById('supportChatContainer');
+    const messagesDiv = document.getElementById('supportChatMessages');
+    const userLabel = document.getElementById('supportChatUser');
+    userLabel.textContent = `Чат с пользователем: ${email}`;
+    chatContainer.style.display = 'block';
+
+    // Загружаем сообщения
+    function renderMessages() {
+        const messages = getUserSupportMessages(email);
+        messagesDiv.innerHTML = '';
+        messages.forEach(msg => {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-message ${msg.sender === 'user' ? 'user-message' : 'support-message'}`;
+            const time = new Date(msg.timestamp).toLocaleTimeString();
+            msgDiv.innerHTML = `<div>${msg.text}</div><div class="message-time">${time}</div>`;
+            messagesDiv.appendChild(msgDiv);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    renderMessages();
+
+    // Отправка ответа
+    const input = document.getElementById('supportChatInput');
+    const sendBtn = document.getElementById('supportChatSend');
+    const closeBtn = document.getElementById('supportChatClose');
+
+    // Удаляем старые обработчики, чтобы не дублировать
+    const newSend = function() {
+        const text = input.value.trim();
+        if (!text) return;
+        addSupportMessageToUser(email, text);
+        input.value = '';
+        renderMessages();
+        // Можно также обновить список пользователей, чтобы видеть новые сообщения
+        loadSupportUsers();
+    };
+    sendBtn.onclick = newSend;
+    input.onkeypress = function(e) {
+        if (e.key === 'Enter') newSend();
+    };
+
+    closeBtn.onclick = function() {
+        chatContainer.style.display = 'none';
+    };
+}
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        // ... существующий код ...
+        const target = tab.getAttribute('data-tab');
+        // ... скрыть/показать секции ...
+        if (target === 'support') {
+            loadSupportUsers();
+        }
+    });
+});
