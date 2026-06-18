@@ -1299,6 +1299,7 @@
                 <button class="admin-tab" data-tab="news">Новости и мероприятия</button>
                 <button class="admin-tab" data-tab="orders">Заказы</button>
                 <button class="admin-tab" data-tab="users">Пользователи</button>
+                <button class="admin-tab" data-tab="support">Поддержка</button>
             </div>
             <div class="admin-content">
                 <div id="admin-products" class="admin-section active">
@@ -1352,6 +1353,21 @@
                         <tbody id="adminUsersList"></tbody></table>
                     </div>
                 </div>
+                <div id="admin-support" class="admin-section">
+    <h3>Обращения клиентов</h3>
+    <div id="supportUsersList">
+        <!-- Здесь будет список пользователей с сообщениями -->
+    </div>
+    <div id="supportChatContainer" style="display: none; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+        <h4 id="supportChatUser">Чат с пользователем</h4>
+        <div id="supportChatMessages" style="max-height: 300px; overflow-y: auto; background: var(--secondary-color); padding: 15px; border-radius: 10px; margin-bottom: 15px;"></div>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="supportChatInput" placeholder="Введите ответ..." style="flex: 1; padding: 12px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-color);">
+            <button id="supportChatSend" class="btn" style="border-radius: 20px;">Отправить</button>
+        </div>
+        <button id="supportChatClose" class="btn" style="margin-top: 10px; background: #f44336;">Закрыть чат</button>
+    </div>
+</div>
             </div>
         </div>
     </div>
